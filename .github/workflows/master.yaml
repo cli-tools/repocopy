@@ -1,0 +1,23 @@
+name: repocopy build release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    container:
+      image: thevlang/vlang:alpine
+
+    steps:
+    - uses: actions/checkout@v3
+    - run: v test .
+    - run: v -prod -cflags -static -o repocopy .
+    - run: strip repocopy
+    - uses: softprops/action-gh-release@v1
+      with:
+        files: repocopy
