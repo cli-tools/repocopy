@@ -5,7 +5,7 @@ import v.vmod
 
 const app = vmod.from_file('v.mod') or { panic(err) }
 
-fn check(name string, value string) {
+fn argcheck(name string, value string) {
 	if value == '' {
 		eprintln('Error: --${name} or -${name[0..1]} not specified')
 		eprintln('Use --help for help.')
@@ -33,11 +33,11 @@ fn main() {
 		exit(1)
 	}
 
-	check('registry', registry)
-	check('username', username)
-	check('password', password)
-	check('source', source)
-	check('target', target)
+	argcheck('registry', registry)
+	argcheck('username', username)
+	argcheck('password', password)
+	argcheck('source', source)
+	argcheck('target', target)
 
 	protocol := if insecure { 'http' } else { 'https' }
 
