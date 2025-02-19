@@ -1,6 +1,6 @@
 Module {
     name: 'repocopy'
-    version: '0.1.0'
+    version: '0.1.1'
     license: 'Unlicense'
     description: 'copy a repository from one place to another on the same registry'
     author: 'CLI-tools'
