@@ -84,7 +84,7 @@ fn link_blob(registry Registry, access_token string, blob Blob, source Repositor
 		method: .post
 		header: http.new_header(http.HeaderConfig{.authorization, authorization}, http.HeaderConfig{.content_type, 'application/vnd.docker.distribution.manifest.v2+json'})
 	)!
-	if req.status_code != 200 {
+	if req.status_code != 201 {
 		return error('Failed to mount blob on ${target.name} with digest ${blob.digest} from ${source.name}: status code ${req.status_code}')
 	}
 }
