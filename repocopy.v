@@ -26,6 +26,8 @@ fn main() {
 	source := fp.string('source', `s`, '', 'source repository, as path/to/source[:tag]')
 	target := fp.string('target', `t`, '', 'target repository, as path/to/target[:tag]')
 	insecure := fp.bool('insecure', ` `, false, 'insecure access over HTTP')
+	verbose := fp.bool('verbose', `v`, false, 'verbose output')
+	check := fp.bool('check', `c`, false, 'check, exit code 0 if repositories are identical')
 
 	fp.finalize() or {
 		eprintln(err)
@@ -63,7 +65,7 @@ fn main() {
 	}
 
 	if !is_valid_name(target_name) {
-		eprintln('error: target repository name invalid: ${source_name}')
+		eprintln('error: target repository name invalid: ${target_name}')
 		exit(1)
 	}
 
@@ -88,14 +90,43 @@ fn main() {
 	}
 
 	mut access_token := get_access_token(the_registry, source_repo, target_repo)!
-	eprintln('✓ fetched access token')
+	if verbose {
+		eprintln('✓ fetched access token')
+	}
 
 	manifest := get_manifest(the_registry, access_token, source_repo)!
-	eprintln('✓ fetched source manifest')
+	if verbose {
+		eprintln('✓ fetched source manifest')
+	}
 
-	link_manifest(the_registry, access_token, manifest, source_repo, target_repo)!
-	eprintln('✓ linked target from source')
+	mut exit_code := 0
 
-	put_manifest(the_registry, access_token, manifest, target_repo)!
-	eprintln('✓ put target manifest')
+	if check {
+		target_manifest := get_manifest(the_registry, access_token, target_repo)!
+		if verbose {
+			eprintln('✓ fetched target manifest')
+		}
+		if manifest != target_manifest {
+			if verbose {
+				eprintln('X target and source manifests are not identical')
+			}
+			exit_code = 1
+		} else {
+			if verbose {
+				eprintln('✓ source and target manifest are identical')
+			}
+		}
+	} else {
+		link_manifest(the_registry, access_token, manifest, source_repo, target_repo)!
+		if verbose {
+			eprintln('✓ linked target from source')
+		}
+
+		put_manifest(the_registry, access_token, manifest, target_repo)!
+		if verbose {
+			eprintln('✓ put target manifest')
+		}
+	}
+
+	exit(exit_code)
 }
