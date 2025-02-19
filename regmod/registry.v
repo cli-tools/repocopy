@@ -117,7 +117,7 @@ pub fn put_manifest(registry Registry, access_token string, manifest Manifest, r
 }
 
 pub fn is_valid_name(name string) bool {
-	valid_name := regex.regex_opt(r'^(?:[a-z0-9]+(?:[_.-][a-z0-9]+)*)(?:/[a-z0-9]+(?:[_.-][a-z0-9]+)*)*$') or {
+	valid_name := regex.regex_opt(r'^(?!.*(\.\.|--))(?![-.])[a-z0-9]+(?:[_.-][a-z0-9]+)*(?:/[a-z0-9]+(?:[_.-][a-z0-9]+)*){0,127}$') or {
 		panic(err)
 	}
 	return valid_name.matches_string(name)
