@@ -16,8 +16,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: v test .
-    # NOTE(hholst): -prod is broken with json parse
-    - run: v -cflags -static -o repocopy .
+    # FIXME(hholst): -fno-inline-small-functions is required or the build will break with -prod
+    - run: v -prod -cc gcc -cflags -fno-inline-small-functions -cflags -static -o repocopy .
     - run: strip repocopy
     - uses: softprops/action-gh-release@v1
       with:
