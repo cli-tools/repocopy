@@ -3,7 +3,7 @@ import os
 import regmod { Registry, Repository, get_access_token, get_manifest, is_valid_name, is_valid_tag, link_manifest, put_manifest }
 import v.vmod
 
-const app = vmod.from_file('v.mod') or { panic(err) }
+const embedded_vmod = $embed_file('v.mod')
 
 fn argcheck(name string, value string) {
 	if value == '' {
@@ -14,6 +14,9 @@ fn argcheck(name string, value string) {
 }
 
 fn main() {
+	vmod_str := embedded_vmod.to_string()
+	app := vmod.decode(vmod_str) or { panic(err) }
+
 	mut fp := flag.new_flag_parser(os.args)
 
 	fp.application(app.name)
